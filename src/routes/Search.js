@@ -27,9 +27,9 @@ function queryChanged(e) {
 };
 
         
-function choosenBefore(result) {
-    let hasShelf = props.books.filter(book => book.id === result.id);
-    return hasShelf.length ? hasShelf[0].shelf : "none"}
+// function choosenBefore(result) {
+//     let hasShelf = props.books.filter(book => book.id === result.id);
+//     return hasShelf.length ? hasShelf[0].shelf : "none"}
 
     return (
         <div className="search-books">
@@ -39,15 +39,46 @@ function choosenBefore(result) {
                     <input 
                         type="text" 
                         placeholder="Search by title or author"
-                        value={state.query}
+                        // value={state.query}
                         onChange={(e)=>queryChanged(e)}
                     />
                 </div>
             </div>
             <div className="search-books-results">
                 <ol className="books-grid">
-                    {(state.query !== "")&&(Array.isArray(state.result)&& state.result.filter(book=> book.imageLinks.thumbnail !== undefined).map(book=>
-                    <Book book={book} onChange={choosenBefore}/> ))}
+                    {(state.query !== "")?
+
+                    ((Array.isArray(state.result))?
+
+                    (state.result.filter(book=> book.imageLinks.thumbnail !== undefined).map(book=>{
+                    const hasShelf=props.choosenBefore.find(hasShelf => hasShelf.id === book.id)
+                    
+                    if (hasShelf !== undefined) {
+                        return(
+                            <Book
+                                key={hasShelf.id}
+                                book={hasShelf}
+                                title={hasShelf.title}
+                                author={hasShelf.authors}
+                                imageURL={hasShelf.imageLinks.thumbnail}
+                                />
+                        )
+                    }else {
+                        return( 
+                            <Book
+                            key={book.id}
+                            book={book}
+                            title={book.title}
+                            author={book.authors}
+                            imageURL={book.imageLinks.thumbnail}
+
+                            />)}})):
+                            
+                            (<h1>No Match Found!!!</h1>) ) :
+
+                                (<div>write book name, please...</div>)
+                    }
+                    
                 </ol>
             </div>
         </div>
