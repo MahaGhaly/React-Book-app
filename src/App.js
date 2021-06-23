@@ -39,8 +39,13 @@ return (
       <div className="app">
         <BrowserRouter>
           <Switch>
-            <Route exact path={'/'} render={() => <Home shelves={state.shelves} allBooks={state.books}/>}/>
-            <Route exact path={'/search'} render={() => <Search allBooks={state.books} choosenBefore={state.books}/>}/>
+            <Route exact path={'/'} render={() => (
+              <Home shelves={state.shelves} allBooks={state.books}/>)}
+            />
+            
+            <Route exact path={'/search'} render={() => (
+              <Search alreadyInShelf={state.books}/>)}
+            />
           </Switch>
         </BrowserRouter>
       </div>

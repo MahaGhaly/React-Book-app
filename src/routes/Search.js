@@ -3,28 +3,38 @@ import { Link } from 'react-router-dom';
 // import * as BooksAPI from '../BooksAPI';
 import { search } from '../BooksAPI';
 import Book from '../components/Book';
-
-
+import axios from "axios";
 function Search (props) {
-    const [state, setState]=useState(
+    const [newQuery, setState]=useState(
     {
         query: '',
         result: []
-    }
-    )
+    });
+
+let cancelRequest = null;
+
+function queryChanged(e) {
+    setState({ query: e.target.value });
+    toCancelRequests();
+    searchedBooks(e.target.value);
+    // console.log('You\'re writing now: ', e.target.value)
+};
+
 // API Search Function
 const searchedBooks=function (query) {
     search(query)
     .then(res => 
-        (setState(currState =>({...currState,result:res})))
-    )
-};
+        (setState(currState =>({...currState,result:res}))));
+}
 
-function queryChanged(e) {
-    console.log('You\'re writing now: ', e.target.value)
-    setState({ query: e.target.value });
-    searchedBooks(state.query);
-};
+const toCancelRequests = () => {
+    if(cancelRequest !== null) {
+        this.cancelRequest.cancel(
+            "request cancelled now!!!"
+        );
+    }
+    cancelRequest = axios.CancelToken.source();
+}
 
         
 // function choosenBefore(result) {
@@ -34,7 +44,7 @@ function queryChanged(e) {
     return (
         <div className="search-books">
             <div className="search-books-bar">
-                <Link className="close-search" to='/'>Back</Link>
+                <Link to='/' className="close-search" >Back</Link>
                 <div className="search-books-input-wrapper">
                     <input 
                         type="text" 
@@ -46,12 +56,12 @@ function queryChanged(e) {
             </div>
             <div className="search-books-results">
                 <ol className="books-grid">
-                    {(state.query !== "")?
+                    {(newQuery.query !== "")?
 
-                    ((Array.isArray(state.result))?
+                    ((Array.isArray(newQuery.result))?
 
-                    (state.result.filter(book=> book.imageLinks.thumbnail !== undefined).map(book=>{
-                    const hasShelf=props.choosenBefore.find(hasShelf => hasShelf.id === book.id)
+                    (newQuery.result.filter(book=> book.imageLinks !== undefined).map(book=>{
+                    const hasShelf=props.alreadyInShelf.find(hasShelf => hasShelf.id === book.id)
                     
                     if (hasShelf !== undefined) {
                         return(
@@ -82,7 +92,7 @@ function queryChanged(e) {
                 </ol>
             </div>
         </div>
-    ) 
+    );
 }
 
 
